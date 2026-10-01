@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: eventservice
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # Same database as bankingservices: this service owns the existing `events` table in db_example.
+    url: ${EVENTS_DB_URL:jdbc:mysql://localhost:3306/db_example?useSSL=false}
+    username: ${EVENTS_DB_USERNAME:root}
+    password: ${EVENTS_DB_PASSWORD}
+  jpa:
+    hibernate:
+      # Never create/alter/drop: the existing `events` table is used exactly as it is.
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+server:
+  port: 8085
+  servlet:
+    context-path: /event
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db
